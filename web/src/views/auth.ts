@@ -72,7 +72,29 @@ export function loginView(app: App): void {
   name.focus();
 }
 
+function brokenLink(app: App, why: string, next: string): void {
+  render(
+    app.root,
+    h(
+      "main",
+      { class: "page narrow" },
+      h("h1", {}, "This link does not work"),
+      h("p", {}, why),
+      h("p", { class: "muted" }, next),
+    ),
+  );
+}
+
 export async function inviteView(app: App, token: string): Promise<void> {
+  // A token is 64 hexadecimal characters; anything else is a link that lost its end on the way.
+  if (!/^[0-9a-f]{64}$/.test(token)) {
+    brokenLink(
+      app,
+      "The link is incomplete: part of it was lost when it was copied.",
+      "Copy the whole link again, up to its last character, and open that.",
+    );
+    return;
+  }
   render(
     app.root,
     h("main", { class: "page narrow" }, h("p", { class: "muted" }, "Opening the invite…")),
@@ -81,16 +103,7 @@ export async function inviteView(app: App, token: string): Promise<void> {
   try {
     info = await app.api.inviteInfo(token);
   } catch (err) {
-    render(
-      app.root,
-      h(
-        "main",
-        { class: "page narrow" },
-        h("h1", {}, "This link does not work"),
-        h("p", {}, message(err)),
-        h("p", { class: "muted" }, "Ask for a new link."),
-      ),
-    );
+    brokenLink(app, message(err), "Ask for a new link.");
     return;
   }
   const error = h("p", { class: "error", role: "alert" });

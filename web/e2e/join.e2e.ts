@@ -53,6 +53,16 @@ for (const kind of BROWSERS) {
       await second.page.getByRole("heading", { name: "This link does not work" }).waitFor();
     });
 
+    test("an invite link cut short says so rather than asking to sign in", async () => {
+      const server = await Server.start();
+      const link = await server.invite("ana");
+      const { page } = await phone(server, kind);
+      await page.goto(link.slice(0, -20));
+      await page.getByRole("heading", { name: "This link does not work" }).waitFor();
+      await page.getByText("The link is incomplete").waitFor();
+      expect(await page.getByRole("button", { name: "Sign in" }).count()).toBe(0);
+    });
+
     test("an administrator makes an invite link in the app", async () => {
       const server = await Server.start();
       const { page } = await phone(server, kind);

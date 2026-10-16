@@ -47,9 +47,11 @@ export class App {
   }
 
   async start(): Promise<void> {
-    const invite = /^\/i\/([0-9a-f]{64})\/?$/.exec(location.pathname);
-    if (invite?.[1]) {
-      inviteView(this, invite[1]);
+    // Any path under /i/, so that a link cut short when it was copied says so rather than
+    // asking to sign in.
+    const invite = /^\/i\/([^/]*)\/?$/.exec(location.pathname);
+    if (invite) {
+      inviteView(this, invite[1] ?? "");
       return;
     }
     window.addEventListener("hashchange", () => this.route());
