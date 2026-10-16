@@ -1,0 +1,33 @@
+{
+  "back": null,
+  "code": {
+    "format": "pdf417",
+    "value": "M1IVANKOVIC/ANA"
+  },
+  "color": "#0a2f6b",
+  "created_at": 1760000000,
+  "display_number": "992 000 123 456",
+  "front": null,
+  "holder": {
+    "display_name": "Ana",
+    "id": 2
+  },
+  "id": 1,
+  "last_used_at": null,
+  "name": "Miles & More",
+  "notes": "Gold until March",
+  "private": true,
+  "program": "Lufthansa",
+  "updated_at": 1760000000,
+  "use_count": 0
+}
+{
+  "display_name": "Ana",
+  "household": {
+    "id": 1,
+    "name": "Home"
+  },
+  "id": 2,
+  "is_admin": false,
+  "name": "ana"
+}

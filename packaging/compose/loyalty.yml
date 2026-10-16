@@ -1,0 +1,47 @@
+# This file is part of Loyalty Card App.
+#
+# Copyright (C) 2026 Marko Ivankovic
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# The app, as a service for a docker-compose.yml that already runs nginx. Copy it under
+# `services:` and adjust the marked lines - see packaging/README.md.
+  loyalty:
+    build:
+      context: /home/marko/src/loyalty-card-app             # <- your checkout
+      dockerfile: packaging/docker/Dockerfile
+    image: loyalty-card-app
+    container_name: loyalty                                # nginx reaches it as http://loyalty:8080
+    init: true                                             # stops at once when told to: the
+                                                           # server is the container's first process
+    mem_limit: 128m
+    pids_limit: 64
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    user: "65534:65534"                                    # owns the data folder below
+    environment:
+      LOYALTY_ORIGIN: https://cards.example.org            # <- where people open it
+      LOYALTY_TRUST_PROXY: "true"                          # nginx sets X-Real-IP
+    volumes:
+      - /srv/domaci/loyalty:/data                          # <- the database; owned by 65534
+    healthcheck:
+      test: ["CMD", "/loyalty", "healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - gateway                                            # a network only nginx shares with it

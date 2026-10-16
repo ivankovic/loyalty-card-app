@@ -1,0 +1,22 @@
+# ---> Rust: build output.
+/target/
+
+# ---> The web app: its dependencies and build output (built again by `make web`).
+/web/node_modules/
+/web/dist/
+/web/e2e/out/
+
+# ---> A database made in the checkout while trying things.
+*.db
+*.db-wal
+*.db-shm
+
+# AI stuff
+.serena
+.claude
+
+# ---> Local working files, never committed.
+# Working notes (follow-ups, experiments, negative results, decision log); see AGENTS.md.
+/AGENT_LOG.md
+# A generated index of the tree, regenerated locally.
+/OVERVIEW.md

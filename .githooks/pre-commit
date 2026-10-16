@@ -1,0 +1,37 @@
+#!/bin/sh
+# This file is part of Loyalty Card App.
+#
+# Copyright (C) 2026 Marko Ivankovic
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# Formats what is about to be committed: rustfmt on staged Rust, Biome on staged web files.
+# Enabled with `make hooks`. Refuses when a file to format also has unstaged changes, because
+# formatting and re-staging it would commit those too.
+set -e
+rust=$(git diff --cached --name-only --diff-filter=ACM -- '*.rs')
+web=$(git diff --cached --name-only --diff-filter=ACM -- 'web/*.ts' 'web/*.css' 'web/*.json' | sed 's#^web/##')
+for file in $rust $(printf '%s\n' $web | sed 's#^#web/#'); do
+    if ! git diff --quiet -- "$file"; then
+        echo "pre-commit: $file has unstaged changes; stage or stash them first" >&2
+        exit 1
+    fi
+done
+if [ -n "$rust" ]; then
+    rustfmt --edition 2024 $rust
+    git add $rust
+fi
+if [ -n "$web" ]; then
+    (cd web && bunx biome check --write --no-errors-on-unmatched $web)
+    git add $(printf '%s\n' $web | sed 's#^#web/#')
+fi

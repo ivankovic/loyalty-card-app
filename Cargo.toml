@@ -1,0 +1,90 @@
+# This file is part of Loyalty Card App.
+#
+# Copyright (C) 2026 Marko Ivankovic
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+[package]
+name = "loyalty-card-app"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "A self-hosted loyalty card wallet for a household: cards, barcodes and photos, shared."
+license = "AGPL-3.0-only"
+repository = "https://github.com/ivankovic/loyalty-card-app"
+readme = "README.md"
+publish = false
+
+[[bin]]
+name = "loyalty"
+path = "src/main.rs"
+
+[lib]
+name = "loyalty"
+path = "src/lib.rs"
+
+[dependencies]
+# The command line: `serve`, `healthz` and the administrator's commands. `env` so that the
+# container is configured with environment variables, as Compose prefers.
+clap = { version = "4", features = ["derive", "env"] }
+
+# Errors that carry a message to the person reading them; nothing matches on their type.
+anyhow = "1"
+
+# The database. `bundled` builds SQLite into the binary, so the container image needs no
+# library and every build runs the same SQLite.
+rusqlite = { version = "0.40", features = ["bundled"] }
+
+# The web server. axum's default features are off: they bring multipart, websockets and
+# tracing, none of which this serves.
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "tokio"] }
+tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
+
+# The accept loop in `web::serve`, for what `axum::serve` does not offer: a header read timeout
+# (which needs hyper's timer) and a cap on open connections. All three are already in the tree
+# under axum; naming them adds no crate. `tower` is for `ServiceExt::oneshot`.
+hyper = { version = "1", default-features = false, features = ["server", "http1"] }
+hyper-util = { version = "0.1", default-features = false, features = ["tokio"] }
+tower = { version = "0.5", default-features = false, features = ["util"] }
+
+# The API's JSON.
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Passwords, hashed with Argon2id.
+argon2 = "0.5"
+
+# Session and invite tokens: random bytes from the operating system, stored and looked up only
+# as their SHA-256. Photos are named by theirs.
+getrandom = "0.3"
+sha2 = "0.10"
+
+[dev-dependencies]
+tempfile = "3"
+# The accept loop's tests talk raw HTTP over a socket.
+tokio = { version = "1", features = ["io-util"] }
+# Reading a response body in the API tests, which call the router without a socket.
+http-body-util = "0.1"
+
+[profile.dev.package.argon2]
+# A password hash takes seconds unoptimised and milliseconds optimised; the tests hash real
+# passwords and have a time budget (see CONTRIBUTING.md).
+opt-level = 3
+
+[profile.dev.package.blake2]
+opt-level = 3
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+strip = true

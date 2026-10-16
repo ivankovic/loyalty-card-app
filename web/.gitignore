@@ -1,0 +1,4 @@
+# What Biome skips, besides the root .gitignore: the same three folders, seen from here.
+node_modules/
+dist/
+e2e/out/

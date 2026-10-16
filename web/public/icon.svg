@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Cards</title>
+  <rect width="512" height="512" fill="#1c7455"/>
+  <g transform="rotate(-12 256 256)">
+    <rect x="96" y="150" width="300" height="190" rx="26" fill="#d9a400"/>
+  </g>
+  <rect x="116" y="176" width="300" height="190" rx="26" fill="#ffffff"/>
+  <rect x="116" y="176" width="300" height="46" rx="26" fill="#c2291e"/>
+  <rect x="116" y="200" width="300" height="22" fill="#c2291e"/>
+  <g fill="#15201b">
+    <rect x="146" y="250" width="8" height="84"/>
+    <rect x="162" y="250" width="4" height="84"/>
+    <rect x="174" y="250" width="12" height="84"/>
+    <rect x="194" y="250" width="4" height="84"/>
+    <rect x="206" y="250" width="8" height="84"/>
+    <rect x="222" y="250" width="4" height="84"/>
+    <rect x="232" y="250" width="12" height="84"/>
+    <rect x="252" y="250" width="4" height="84"/>
+    <rect x="262" y="250" width="8" height="84"/>
+    <rect x="278" y="250" width="12" height="84"/>
+    <rect x="298" y="250" width="4" height="84"/>
+    <rect x="308" y="250" width="8" height="84"/>
+    <rect x="324" y="250" width="4" height="84"/>
+    <rect x="334" y="250" width="12" height="84"/>
+    <rect x="354" y="250" width="4" height="84"/>
+    <rect x="364" y="250" width="8" height="84"/>
+    <rect x="380" y="250" width="6" height="84"/>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+# What the image build does not need: build output, history, dependencies it installs itself,
+# working notes, and any database made in the checkout.
+target
+.git
+.claude
+web/node_modules
+web/dist
+web/e2e/out
+AGENT_LOG.md
+OVERVIEW.md
+*.db
+*.db-wal
+*.db-shm

@@ -1,0 +1,40 @@
+# This file is part of Loyalty Card App.
+#
+# Copyright (C) 2026 Marko Ivankovic
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# cargo-nextest's settings: the time budgets in CONTRIBUTING.md, enforced. A test past its
+# budget is reported SLOW, and terminated at ten times it.
+
+[profile.default]
+slow-timeout = { period = "300ms", terminate-after = 10 }
+
+# The end-to-end tests run the real binary or the whole router: one second each.
+[[profile.default.overrides]]
+filter = "binary(api) | binary(cli) | binary(upgrade)"
+slow-timeout = { period = "1s", terminate-after = 10 }
+
+# The container tests build an image and start nginx. They race real services, so a test that
+# passes on a retry is reported FLAKY instead of failing the run. None of the others retry: a
+# flake there is a bug.
+[[profile.default.overrides]]
+filter = "binary(container)"
+slow-timeout = { period = "60s", terminate-after = 10 }
+retries = 2
+test-group = "containers"
+
+# Rootless podman creates containers through one database; two at a time avoids "database is
+# locked".
+[test-groups]
+containers = { max-threads = 2 }

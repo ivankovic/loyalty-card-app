@@ -1,0 +1,40 @@
+# This file is part of Loyalty Card App.
+#
+# Copyright (C) 2026 Marko Ivankovic
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# cargo-about's settings for THIRD-PARTY-NOTICES.md: the licences the crates built into the
+# binary may have. A crate under any other licence fails `make third-party-notices`, which is
+# the point: a new licence is a decision, not a side effect of adding a dependency.
+accepted = [
+    "0BSD",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "BSL-1.0",
+    "ISC",
+    "MIT",
+    "MPL-2.0",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "Unlicense",
+    "WTFPL",
+    "Zlib",
+]
+ignore-build-dependencies = true
+ignore-dev-dependencies = true
+
+[loyalty-card-app]
+accepted = ["AGPL-3.0-only"]

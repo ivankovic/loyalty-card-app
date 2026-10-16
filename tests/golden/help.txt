@@ -1,0 +1,126 @@
+A household's loyalty cards, on its own server
+
+Usage: loyalty [OPTIONS] <COMMAND>
+
+Commands:
+  serve      Serve the app and its API
+  healthz    Check that the server answers: the container's health check
+  household  Households: the groups of people who share cards
+  invite     Print a one-time link that lets someone join a household and choose their password
+  user       People
+  backup     Write a consistent copy of the database to a new file, while the server runs
+  help       Print this message or the help of the given subcommand(s)
+
+Options:
+      --db <DB>
+          The database file. Made on first use
+          
+          [env: LOYALTY_DB]
+          [default: /data/loyalty.db]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+---
+Serve the app and its API
+
+Usage: serve [OPTIONS] --origin <ORIGIN>
+
+Options:
+      --db <DB>
+          The database file. Made on first use
+          
+          [env: LOYALTY_DB]
+          [default: /data/loyalty.db]
+
+      --listen <LISTEN>
+          The address to listen on. Port 0 picks a free one and prints it
+          
+          [env: LOYALTY_LISTEN]
+          [default: 0.0.0.0:8080]
+
+      --origin <ORIGIN>
+          Where people open the app, as their browser shows it: https://cards.example.org
+          
+          [env: LOYALTY_ORIGIN]
+
+      --trust-proxy
+          Believe the X-Real-IP header: only behind a proxy (nginx) that sets it
+          
+          [env: LOYALTY_TRUST_PROXY]
+
+  -h, --help
+          Print help
+
+---
+Print a one-time link that lets someone join a household and choose their password
+
+Usage: invite [OPTIONS] --household <HOUSEHOLD> --origin <ORIGIN> <NAME>
+
+Arguments:
+  <NAME>
+          The name they will sign in with
+
+Options:
+      --db <DB>
+          The database file. Made on first use
+          
+          [env: LOYALTY_DB]
+          [default: /data/loyalty.db]
+
+      --household <HOUSEHOLD>
+          The household to join
+
+      --admin
+          Let them invite others too
+
+      --origin <ORIGIN>
+          Where people open the app, for the link: https://cards.example.org
+          
+          [env: LOYALTY_ORIGIN]
+
+  -h, --help
+          Print help
+
+---
+People
+
+Usage: user [OPTIONS] <COMMAND>
+
+Commands:
+  list            List everyone, with their household
+  reset-password  Print a one-time link that lets someone choose a new password. Their phones stay signed in until they use it
+  remove          Remove someone. Their private cards are deleted; their other cards become the family's
+  help            Print this message or the help of the given subcommand(s)
+
+Options:
+      --db <DB>
+          The database file. Made on first use
+          
+          [env: LOYALTY_DB]
+          [default: /data/loyalty.db]
+
+  -h, --help
+          Print help
+
+---
+Write a consistent copy of the database to a new file, while the server runs
+
+Usage: backup [OPTIONS] <TARGET>
+
+Arguments:
+  <TARGET>
+          The copy to write. It must not exist yet
+
+Options:
+      --db <DB>
+          The database file. Made on first use
+          
+          [env: LOYALTY_DB]
+          [default: /data/loyalty.db]
+
+  -h, --help
+          Print help
