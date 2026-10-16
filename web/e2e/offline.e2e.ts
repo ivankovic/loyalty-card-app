@@ -19,7 +19,10 @@
 import { describe, expect, test } from "bun:test";
 import { addCard, arrive, BROWSERS, phone, Server } from "./harness";
 
-for (const kind of BROWSERS) {
+// Chromium only: Playwright's WebKit cannot reload a page while offline ("WebKit encountered an
+// internal error"), so the service worker is never asked. On an iPhone this is checked by hand
+// (CONTRIBUTING.md, "Releasing").
+for (const kind of BROWSERS.filter((b) => b === "chromium")) {
   describe(kind, () => {
     test("the cards open and draw with the phone offline", async () => {
       const server = await Server.start();

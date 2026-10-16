@@ -142,7 +142,9 @@ barcode tests load zxing's WebAssembly from `node_modules`, never from its CDN.
    database, add a household, two people, a family card, a private card and a photo, dump it
    with `sqlite3 loyalty.db .dump > tests/fixtures/db/db-<version>.sql`, and add the version to
    `RELEASES` in `tests/upgrade.rs`.
-4. Tag `v<version>` on `main`.
+4. On an iPhone and an Android phone, with the app installed to the home screen: scan a card,
+   show it at a till, and open it in airplane mode. (The e2e tests cannot open WebKit offline.)
+5. Tag `v<version>` on `main`.
 
 ## Code structure
 
