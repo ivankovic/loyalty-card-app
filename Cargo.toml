@@ -62,7 +62,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
 # Passwords, hashed with Argon2id.
-argon2 = "0.5"
+argon2 = "0.6"
 
 # Session and invite tokens: random bytes from the operating system, stored and looked up only
 # as their SHA-256. Photos are named by theirs.
