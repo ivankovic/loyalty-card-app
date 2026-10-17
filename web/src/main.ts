@@ -18,8 +18,10 @@
 
 import "./style.css";
 import { App } from "./app";
+import { applyTheme } from "./theme";
 import { configure } from "./zxing";
 
+applyTheme();
 configure({ locateFile: () => WASM_URL });
 
 const root = document.getElementById("app");

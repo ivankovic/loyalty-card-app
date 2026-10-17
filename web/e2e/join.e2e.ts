@@ -19,6 +19,10 @@
 import { describe, expect, test } from "bun:test";
 import { arrive, BROWSERS, PASSWORD, phone, Server } from "./harness";
 
+// The two palettes' backgrounds (style.css `--bg`).
+const LIGHT = "rgb(243, 236, 224)";
+const DARK = "rgb(27, 22, 18)";
+
 for (const kind of BROWSERS) {
   describe(kind, () => {
     test("someone invited joins, signs out and signs back in", async () => {
@@ -51,6 +55,25 @@ for (const kind of BROWSERS) {
       const second = await phone(server, kind);
       await second.page.goto(link);
       await second.page.getByRole("heading", { name: "This link does not work" }).waitFor();
+    });
+
+    test("the colours follow the phone, unless this device chose them", async () => {
+      const server = await Server.start();
+      const { page } = await phone(server, kind, { context: { colorScheme: "dark" } });
+      const background = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+      await arrive(page, await server.invite("marko"));
+      expect(await background()).toBe(DARK);
+
+      await page.goto("/#/settings");
+      await page.getByLabel("Colours").selectOption({ label: "Light academia" });
+      expect(await background()).toBe(LIGHT);
+      await page.reload();
+      await page.getByLabel("Colours").waitFor();
+      expect(await background()).toBe(LIGHT);
+      expect(await page.getByLabel("Colours").inputValue()).toBe("light");
+
+      await page.getByLabel("Colours").selectOption({ label: "Automatic" });
+      expect(await background()).toBe(DARK);
     });
 
     test("an invite link cut short says so rather than asking to sign in", async () => {

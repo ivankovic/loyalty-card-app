@@ -14,15 +14,31 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-// The person and the household: the password, inviting someone (administrators), signing out.
+// The person and the household: the colours, the password, inviting someone (administrators),
+// signing out.
 
 import { type App, message } from "../app";
 import { h, render } from "../dom";
+import { chooseTheme, savedTheme, THEMES, type Theme } from "../theme";
 
 export function settingsView(app: App): void {
   const snapshot = app.snapshot;
   if (!snapshot) return;
   const { me, household } = snapshot;
+
+  const chosen = savedTheme();
+  const theme = h(
+    "select",
+    { onchange: (event: Event) => chooseTheme((event.target as HTMLSelectElement).value as Theme) },
+    ...THEMES.map(({ value, label }) => h("option", { value, selected: value === chosen }, label)),
+  );
+  const appearance = h(
+    "div",
+    { class: "stack" },
+    h("h2", {}, "Appearance"),
+    h("label", {}, "Colours", theme),
+    h("p", { class: "muted small" }, "Automatic follows the phone's light or dark setting."),
+  );
 
   const pwError = h("p", { class: "error", role: "alert" });
   const current = h("input", {
@@ -112,6 +128,7 @@ export function settingsView(app: App): void {
       h("header", { class: "bar" }, h("a", { class: "back", href: "#/" }, "‹ Cards")),
       h("h1", {}, me.display_name),
       h("p", { class: "muted" }, `Signed in as ${me.name}, in ${household.name}.`),
+      appearance,
       app.mirror.offline ? h("p", { class: "banner" }, "Offline: these need a connection.") : null,
       password,
       invite,

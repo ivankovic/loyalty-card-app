@@ -16,34 +16,64 @@
  */
 
 /* The app's look: one column on a phone, tiles of cards, and a till screen that is all white
- * so that a scanner reads the code. Light and dark follow the phone's setting, except the code,
- * which is always black on white. */
+ * so that a scanner reads the code.
+ *
+ * Two palettes: Light Academia (parchment, walnut ink, a serif face) and Dark Academia
+ * (espresso, aged paper, antique gold). The phone's light or dark setting picks one, unless the
+ * device chose one in Settings, which sets `data-theme` on <html> (theme.ts). The dark palette is
+ * written out twice, once per way of choosing it; CSS has no way to share one block between a
+ * media query and a selector. The code itself is always black on white. */
 
 :root {
   color-scheme: light dark;
-  --bg: #f4f6f5;
-  --panel: #ffffff;
-  --ink: #15201b;
-  --muted: #5b6b63;
-  --line: #d6dfda;
-  --accent: #1c7455;
-  --on-accent: #ffffff;
-  --danger: #b3261e;
-  --radius: 14px;
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --bg: #f3ece0;
+  --panel: #fbf7ef;
+  --ink: #2b2118;
+  --muted: #6f5d4a;
+  --line: #ddcfb8;
+  --accent: #7b4b2a;
+  --on-accent: #fbf7ef;
+  --danger: #9e2a2b;
+  --note: #ecdcb8;
+  --on-note: #42331a;
+  --shadow: rgb(60 40 20 / 0.18);
+  --radius: 12px;
+  --font: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0e1512;
-    --panel: #18221d;
-    --ink: #e6eee9;
-    --muted: #98aaa0;
-    --line: #2c3a33;
-    --accent: #3fae84;
-    --on-accent: #06140e;
-    --danger: #ff8a80;
+  :root:not([data-theme="light"]) {
+    --bg: #1b1612;
+    --panel: #261f19;
+    --ink: #e9dcc5;
+    --muted: #a8967c;
+    --line: #3d3229;
+    --accent: #c9a35b;
+    --on-accent: #1b1612;
+    --danger: #e3826f;
+    --note: #3a2e1f;
+    --on-note: #ecd9b0;
+    --shadow: rgb(0 0 0 / 0.45);
   }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1b1612;
+  --panel: #261f19;
+  --ink: #e9dcc5;
+  --muted: #a8967c;
+  --line: #3d3229;
+  --accent: #c9a35b;
+  --on-accent: #1b1612;
+  --danger: #e3826f;
+  --note: #3a2e1f;
+  --on-note: #ecd9b0;
+  --shadow: rgb(0 0 0 / 0.45);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 * {
@@ -65,6 +95,8 @@ a {
 
 h1 {
   font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   margin: 0.2em 0 0.3em;
   line-height: 1.2;
 }
@@ -87,6 +119,7 @@ h2 {
 
 .brand {
   font-size: 2.2rem;
+  font-style: italic;
   color: var(--accent);
 }
 
@@ -109,15 +142,15 @@ h2 {
 }
 
 .banner {
-  background: #fff4d6;
-  color: #4a3b00;
+  background: var(--note);
+  color: var(--on-note);
   border-radius: var(--radius);
   padding: 10px 14px;
 }
 
 .hint {
-  background: #fffbe6;
-  color: #4a3b00;
+  background: var(--note);
+  color: var(--on-note);
   border-radius: var(--radius);
   padding: 10px 14px;
   font-size: 0.9rem;
@@ -328,7 +361,7 @@ button:disabled {
   background: linear-gradient(135deg, var(--card), color-mix(in srgb, var(--card) 70%, #000));
   color: #fff;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+  box-shadow: 0 2px 8px var(--shadow);
   overflow: hidden;
 }
 
@@ -354,7 +387,7 @@ button:disabled {
   border-radius: 999px;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
+  box-shadow: 0 6px 18px var(--shadow);
 }
 
 /* The till: white, the code as large as fits, nothing else competing with it. */
@@ -377,7 +410,7 @@ button:disabled {
 
 .show .back,
 .show .icon-button {
-  color: #1c7455;
+  color: #7b4b2a;
   background: #fff;
 }
 

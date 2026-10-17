@@ -16,3 +16,6 @@ command line, and a patch version does not. The database is migrated forward by 
 - The till view: the code full size on white, the screen kept on.
 - Offline: the app and the last cards open with no signal.
 - The container image, the Compose service and the nginx site; `loyalty backup`.
+- Light Academia and Dark Academia colours, following the phone's light or dark setting, or
+  chosen per device in Settings.
+- An invite link cut short when copied says so, instead of showing the sign-in page.
