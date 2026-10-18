@@ -19,3 +19,9 @@ command line, and a patch version does not. The database is migrated forward by 
 - Light Academia and Dark Academia colours, following the phone's light or dark setting, or
   chosen per device in Settings.
 - An invite link cut short when copied says so, instead of showing the sign-in page.
+
+### Fixed
+
+- Sideways, the code covered the button that turned it, leaving no way back on an iPhone; there
+  is now a "Turn back" button, and a tap on the code turns it back too. The sideways code is
+  centred instead of running off the right edge.

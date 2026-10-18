@@ -465,11 +465,40 @@ button:disabled {
   z-index: 10;
 }
 
+.unturn {
+  display: none;
+}
+
+/* Read with the phone turned like the code: vertical text runs the same way, on the side that
+ * is then the bottom. */
+.show.turned .unturn {
+  display: block;
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left));
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 11;
+  writing-mode: vertical-rl;
+  min-height: 0;
+  padding: 18px 10px;
+  background: #fff;
+  color: #7b4b2a;
+  border-color: #7b4b2a;
+}
+
+/* Centred on the screen before it is turned, so that it turns about the screen's centre: in
+ * the grid an element wider than the screen starts at its left edge and turns off the side. Its
+ * height becomes the width across the screen, so it is capped to leave the button 80 px on its
+ * side. */
 .show.turned .barcode.linear {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 92dvh;
+  height: min(100vw - 160px, 40dvh);
   max-height: none;
   max-width: none;
-  transform: rotate(90deg);
+  transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .photo {

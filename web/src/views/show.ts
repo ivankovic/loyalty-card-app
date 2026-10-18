@@ -28,7 +28,11 @@ const HINT = "loyalty.brightness-hint";
 export function showView(app: App, card: Card): void {
   const code = h(
     "div",
-    { class: "code", "aria-live": "polite" },
+    {
+      class: "code",
+      "aria-live": "polite",
+      onclick: () => code.closest(".show")?.classList.remove("turned"),
+    },
     h("p", { class: "muted" }, "Drawing the code…"),
   );
   const linear = info(card.code.format).linear;
@@ -62,8 +66,17 @@ export function showView(app: App, card: Card): void {
     linear
       ? h(
           "button",
-          { class: "quiet", onclick: () => page.classList.toggle("turned") },
+          { class: "quiet", onclick: () => page.classList.add("turned") },
           "Turn it sideways",
+        )
+      : null,
+    // Sideways, the code covers the whole screen, so the way back is drawn over it, and a tap
+    // on the code does the same: an installed app on an iPhone has no back gesture.
+    linear
+      ? h(
+          "button",
+          { class: "unturn", onclick: () => page.classList.remove("turned") },
+          "Turn back",
         )
       : null,
     h(

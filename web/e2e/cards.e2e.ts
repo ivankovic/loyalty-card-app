@@ -30,6 +30,16 @@ for (const kind of BROWSERS) {
       expect(await page.getByText("4006381333931").isVisible()).toBe(true);
       const label = await page.locator("svg.barcode").getAttribute("aria-label");
       expect(label).toBe("EAN-13 400638133393");
+
+      const sideways = page.getByRole("button", { name: "Turn it sideways" });
+      const back = page.getByRole("button", { name: "Turn back" });
+      expect(await back.isVisible()).toBe(false);
+      await sideways.click();
+      await back.click();
+      await sideways.click();
+      await page.locator("svg.barcode").click();
+      await sideways.waitFor();
+      expect(await back.isVisible()).toBe(false);
       expect(errors).toEqual([]);
     });
 
