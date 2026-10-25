@@ -18,6 +18,7 @@ command line, and a patch version does not. The database is migrated forward by 
 - The container image, the Compose service and the nginx site; `loyalty backup`.
 - Light Academia and Dark Academia colours, following the phone's light or dark setting, or
   chosen per device in Settings.
+- A home-screen icon in the Academia colours: a parchment card on a gold one, on leather.
 - An invite link cut short when copied says so, instead of showing the sign-in page.
 
 ### Fixed

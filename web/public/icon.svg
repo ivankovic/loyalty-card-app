@@ -1,29 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <title>Cards</title>
-  <rect width="512" height="512" fill="#1c7455"/>
+  <defs>
+    <radialGradient id="leather" cx="50%" cy="42%" r="70%">
+      <stop offset="0" stop-color="#4a3626"/>
+      <stop offset="1" stop-color="#1b1612"/>
+    </radialGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbf7ef"/>
+      <stop offset="1" stop-color="#ecdfc8"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#leather)"/>
   <g transform="rotate(-12 256 256)">
-    <rect x="96" y="150" width="300" height="190" rx="26" fill="#d9a400"/>
+    <rect x="98" y="156" width="300" height="190" rx="22" fill="#000" opacity="0.28" transform="translate(0 10)"/>
+    <rect x="98" y="156" width="300" height="190" rx="22" fill="#c9a35b"/>
+    <rect x="98" y="156" width="300" height="190" rx="22" fill="none" stroke="#e3c98a" stroke-width="3" opacity="0.7"/>
   </g>
-  <rect x="116" y="176" width="300" height="190" rx="26" fill="#ffffff"/>
-  <rect x="116" y="176" width="300" height="46" rx="26" fill="#c2291e"/>
-  <rect x="116" y="200" width="300" height="22" fill="#c2291e"/>
-  <g fill="#15201b">
-    <rect x="146" y="250" width="8" height="84"/>
-    <rect x="162" y="250" width="4" height="84"/>
-    <rect x="174" y="250" width="12" height="84"/>
-    <rect x="194" y="250" width="4" height="84"/>
-    <rect x="206" y="250" width="8" height="84"/>
-    <rect x="222" y="250" width="4" height="84"/>
-    <rect x="232" y="250" width="12" height="84"/>
-    <rect x="252" y="250" width="4" height="84"/>
-    <rect x="262" y="250" width="8" height="84"/>
-    <rect x="278" y="250" width="12" height="84"/>
-    <rect x="298" y="250" width="4" height="84"/>
-    <rect x="308" y="250" width="8" height="84"/>
-    <rect x="324" y="250" width="4" height="84"/>
-    <rect x="334" y="250" width="12" height="84"/>
-    <rect x="354" y="250" width="4" height="84"/>
-    <rect x="364" y="250" width="8" height="84"/>
-    <rect x="380" y="250" width="6" height="84"/>
+  <rect x="112" y="184" width="300" height="190" rx="22" fill="#000" opacity="0.35" transform="translate(0 12)"/>
+  <rect x="112" y="184" width="300" height="190" rx="22" fill="url(#paper)"/>
+  <path d="M112 206a22 22 0 0 1 22-22h256a22 22 0 0 1 22 22v28h-300z" fill="#7a2a22"/>
+  <rect x="112" y="234" width="300" height="4" fill="#c9a35b"/>
+  <circle cx="382" cy="209" r="11" fill="none" stroke="#c9a35b" stroke-width="3"/>
+  <circle cx="382" cy="209" r="4" fill="#c9a35b"/>
+  <g fill="#2b2118">
+    <rect x="144" y="260" width="8" height="74"/>
+    <rect x="160" y="260" width="4" height="74"/>
+    <rect x="172" y="260" width="12" height="74"/>
+    <rect x="192" y="260" width="4" height="74"/>
+    <rect x="204" y="260" width="8" height="74"/>
+    <rect x="220" y="260" width="4" height="74"/>
+    <rect x="230" y="260" width="12" height="74"/>
+    <rect x="250" y="260" width="4" height="74"/>
+    <rect x="260" y="260" width="8" height="74"/>
+    <rect x="276" y="260" width="12" height="74"/>
+    <rect x="296" y="260" width="4" height="74"/>
+    <rect x="306" y="260" width="8" height="74"/>
+    <rect x="322" y="260" width="4" height="74"/>
+    <rect x="332" y="260" width="12" height="74"/>
+    <rect x="352" y="260" width="4" height="74"/>
+    <rect x="362" y="260" width="8" height="74"/>
+    <rect x="378" y="260" width="6" height="74"/>
   </g>
+  <rect x="144" y="344" width="240" height="3" rx="1.5" fill="#6f5d4a" opacity="0.5"/>
 </svg>
