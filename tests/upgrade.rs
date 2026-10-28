@@ -26,7 +26,7 @@ use loyalty::db::{Db, schema};
 use std::path::PathBuf;
 
 /// The releases with a fixture, oldest first. A release adds itself here when it is cut.
-const RELEASES: &[&str] = &[];
+const RELEASES: &[&str] = &["0.1.0"];
 
 fn fixture(version: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(format!("tests/fixtures/db/db-{version}.sql"))
