@@ -43,6 +43,12 @@ COPY --from=web /src/web/dist web/dist
 RUN cargo build --release --locked --bin loyalty
 
 FROM scratch
+# The source label is how GHCR links the published image to the repository. The release
+# workflow adds the version and the commit.
+LABEL org.opencontainers.image.title="Loyalty Card App" \
+      org.opencontainers.image.description="A household's loyalty cards, self-hosted" \
+      org.opencontainers.image.source="https://github.com/ivankovic/loyalty-card-app" \
+      org.opencontainers.image.licenses="AGPL-3.0-only"
 COPY --from=build /src/target/release/loyalty /loyalty
 USER 65534:65534
 ENV LOYALTY_DB=/data/loyalty.db

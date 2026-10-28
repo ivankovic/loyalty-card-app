@@ -17,10 +17,13 @@
 # The app, as a service for a docker-compose.yml that already runs nginx. Copy it under
 # `services:` and adjust the marked lines - see packaging/README.md.
   loyalty:
-    build:
-      context: /home/marko/src/loyalty-card-app             # <- your checkout
-      dockerfile: packaging/docker/Dockerfile
-    image: loyalty-card-app
+    image: ghcr.io/ivankovic/loyalty-card-app:0.1          # the newest 0.1.x; a change to the
+                                                           # command line waits for 0.2
+    # To build from a checkout instead, replace the line above with these:
+    # build:
+    #   context: /path/to/loyalty-card-app                 # <- your checkout
+    #   dockerfile: packaging/docker/Dockerfile
+    # image: loyalty-card-app
     container_name: loyalty                                # nginx reaches it as http://loyalty:8080
     init: true                                             # stops at once when told to: the
                                                            # server is the container's first process
@@ -36,7 +39,7 @@
       LOYALTY_ORIGIN: https://cards.example.org            # <- where people open it
       LOYALTY_TRUST_PROXY: "true"                          # nginx sets X-Real-IP
     volumes:
-      - /srv/domaci/loyalty:/data                          # <- the database; owned by 65534
+      - /srv/loyalty:/data                                 # <- the database; owned by 65534
     healthcheck:
       test: ["CMD", "/loyalty", "healthz"]
       interval: 30s
@@ -44,4 +47,4 @@
       retries: 3
     restart: unless-stopped
     networks:
-      - gateway                                            # a network only nginx shares with it
+      - gateway                                            # <- a network only nginx shares with it

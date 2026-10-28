@@ -140,11 +140,20 @@ barcode tests load zxing's WebAssembly from `node_modules`, never from its CDN.
    dated section for it: `bun run scripts/check-versions.ts --release`.
 3. Record the release's database for the upgrade test: run the release binary on a new
    database, add a household, two people, a family card, a private card and a photo, dump it
-   with `sqlite3 loyalty.db .dump > tests/fixtures/db/db-<version>.sql`, and add the version to
-   `RELEASES` in `tests/upgrade.rs`.
+   with its schema version (`.dump` leaves `user_version` out, and without it the migrations run
+   again on tables that exist):
+
+       { sqlite3 loyalty.db .dump; echo "PRAGMA user_version=$(sqlite3 loyalty.db 'PRAGMA user_version');"; } \
+           > tests/fixtures/db/db-<version>.sql
+
+   and add the version to `RELEASES` in `tests/upgrade.rs`.
 4. On an iPhone and an Android phone, with the app installed to the home screen: scan a card,
    show it at a till, and open it in airplane mode. (The e2e tests cannot open WebKit offline.)
-5. Tag `v<version>` on `main`.
+5. Tag `v<version>` on `main` and push the tag. The Release workflow
+   (`.github/workflows/release.yml`) checks the versions again, publishes the image to GHCR for
+   amd64 and arm64, and creates the GitHub release with the version's CHANGELOG section as its
+   notes. A new package on GHCR is private: after the first release, make it public in the
+   package's settings, or nobody can pull it.
 
 ## Code structure
 

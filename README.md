@@ -17,6 +17,24 @@ server.
 - **Works with no signal.** The app and your cards are kept on the phone, so they open in a shop's
   basement.
 
+## Run it
+
+You need a server with Docker, a name for the app with a TLS certificate, and nginx in front of
+it: a phone only lets a web app use the camera over HTTPS. The image is published for amd64 and
+arm64, so a Raspberry Pi runs it too:
+
+    ghcr.io/ivankovic/loyalty-card-app:0.1
+
+Add [the Compose service](packaging/compose/loyalty.yml) and [the nginx site](packaging/nginx/loyalty.conf),
+start it, and make your household and your own invite:
+
+    docker exec loyalty /loyalty household add Home
+    docker exec loyalty /loyalty invite --household Home alice --admin
+
+Open the printed link on your phone, choose a password, and add the app to the home screen.
+[packaging/README.md](packaging/README.md) is the whole guide: the data folder, nginx on the host
+or in Compose, updating and backups.
+
 ## How it is built
 
 A Rust server (axum, SQLite) with the web app built into its binary, as one small container.
