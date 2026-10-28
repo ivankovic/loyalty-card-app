@@ -17,6 +17,13 @@ server.
 - **Works with no signal.** The app and your cards are kept on the phone, so they open in a shop's
   basement.
 
+<p>
+  <img src="docs/screenshots/cards-light.png" width="200" alt="The household's cards, each labelled with whose it is, in the light theme">
+  <img src="docs/screenshots/till.png" width="200" alt="A card at the till: its barcode in black on white, with the number under it">
+  <img src="docs/screenshots/edit.png" width="200" alt="Changing a card: name, programme, whose card, and the code, scanned with the camera">
+  <img src="docs/screenshots/cards-dark.png" width="200" alt="The same cards in the dark theme">
+</p>
+
 ## Run it
 
 You need a server with Docker, a name for the app with a TLS certificate, and nginx in front of
