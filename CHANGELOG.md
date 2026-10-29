@@ -7,6 +7,11 @@ command line, and a patch version does not. The database is migrated forward by 
 
 ## [Unreleased]
 
+### Added
+
+- Typing a code by hand guesses its kind from what is typed, instead of needing it picked
+  first.
+
 ## [0.1.0] - 2026-10-28
 
 ### Added

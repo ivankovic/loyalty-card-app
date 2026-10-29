@@ -19,7 +19,7 @@
 
 import { type Card, type CardInput, type CodeFormat, inputOf } from "../api";
 import { type App, COLOURS, message } from "../app";
-import { FORMATS, problem, scan } from "../barcode";
+import { detectFormat, FORMATS, problem, scan } from "../barcode";
 import { type Child, h, render } from "../dom";
 import { shrink } from "../photo";
 import { type Found, Scanner } from "../scanner";
@@ -86,18 +86,31 @@ export function editView(app: App, card: Card | null): void {
     spellcheck: "false",
   });
   const codeProblem = h("p", { class: "error", role: "alert" });
+  // Guesses the kind from what is typed until the person picks one themself, or a scan or photo
+  // already told us: past that point a guess should not override a known answer.
+  let formatKnown = card !== null;
   const check = () => {
     codeProblem.textContent =
       value.value.trim() === ""
         ? ""
         : (problem(format.value as CodeFormat, value.value.trim()) ?? "");
   };
-  value.addEventListener("input", check);
-  format.addEventListener("change", check);
+  value.addEventListener("input", () => {
+    if (!formatKnown) {
+      const guessed = detectFormat(value.value.trim());
+      if (guessed) format.value = guessed;
+    }
+    check();
+  });
+  format.addEventListener("change", () => {
+    formatKnown = true;
+    check();
+  });
   check();
   const useFound = (found: Found) => {
     format.value = found.format;
     value.value = found.value;
+    formatKnown = true;
     check();
   };
 

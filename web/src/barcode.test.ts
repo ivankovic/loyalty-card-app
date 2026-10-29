@@ -20,6 +20,7 @@ import {
   barcodeMarkup,
   checkDigit,
   complete,
+  detectFormat,
   FORMATS,
   fromZxing,
   parseZint,
@@ -56,6 +57,30 @@ describe("the checks a till's scanner makes", () => {
   for (const [format, value, expected] of table) {
     test(`${format} ${JSON.stringify(value)}`, () => {
       expect(problem(format, value)).toBe(expected);
+    });
+  }
+});
+
+describe("the kind guessed for a code typed by hand", () => {
+  const table: [string, CodeFormat | null][] = [
+    ["", null],
+    ["123456", "upce"], // the only format six digits can be
+    ["1234567", "ean8"], // ties with UPC-E's seven-digit form; EAN-8 is the far more common one
+    ["96385074", "ean8"],
+    ["03600029145", "upca"], // too short for EAN-13
+    ["036000291452", "ean13"], // ties with UPC-A's checked form; a scan would end up here too
+    ["4006381333931", "ean13"],
+    ["123", null], // odd and not six, matches nothing
+    ["1234", "itf"], // even length, no shorter/named format claims it
+    ["A40156B", "codabar"], // A-D guards are Codabar's; Code 39 allows the letters but not as one
+    ["AB", "code39"], // no digits between the guards for Codabar's inner pattern to match
+    ["Member #42", "code128"],
+    ["Café", null], // accented letters are outside every format's character set
+    ["anything ✓", null], // likewise - this is only a QR code because of where it is typed in
+  ];
+  for (const [value, expected] of table) {
+    test(`${JSON.stringify(value)} -> ${expected}`, () => {
+      expect(detectFormat(value)).toBe(expected);
     });
   }
 });
