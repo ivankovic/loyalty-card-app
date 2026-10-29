@@ -64,6 +64,17 @@ export function checkDigit(body: string): number {
 
 const FULL_LENGTH: Partial<Record<CodeFormat, number>> = { ean13: 13, ean8: 8, upca: 12 };
 
+// Shared between the checks below and detectFormat's guess: both ask "which symbologies could
+// this text be", just for a different reason.
+const CODE39_BODY = /^[0-9A-Z \-.$/+%]+$/;
+const CODABAR_INNER = /^[0-9\-$:/.+]+$/;
+const PRINTABLE_ASCII = /^[\x20-\x7e]+$/;
+
+/** Codabar's inner digits, with the optional A-D start/stop guard characters stripped. */
+function codabarInner(value: string): string {
+  return value.replace(/^[A-D]/, "").replace(/[A-D]$/, "");
+}
+
 /** Why `value` cannot be a `format` code, or null if it can. The same checks as the server's. */
 export function problem(format: CodeFormat, value: string): string | null {
   const digits = /^[0-9]*$/.test(value);
@@ -92,21 +103,58 @@ export function problem(format: CodeFormat, value: string): string | null {
         ? null
         : "ITF takes an even number of digits";
     case "code39":
-      return /^[0-9A-Z \-.$/+%]+$/.test(value)
+      return CODE39_BODY.test(value)
         ? null
         : "Code 39 takes digits, capital letters and - . $ / + % and space";
-    case "codabar": {
-      const inner = value.replace(/^[A-D]/, "").replace(/[A-D]$/, "");
-      return /^[0-9\-$:/.+]+$/.test(inner) ? null : "Codabar takes digits and - $ : / . +";
-    }
+    case "codabar":
+      return CODABAR_INNER.test(codabarInner(value))
+        ? null
+        : "Codabar takes digits and - $ : / . +";
     case "code128":
     case "code93":
-      return /^[\x20-\x7e]+$/.test(value)
+      return PRINTABLE_ASCII.test(value)
         ? null
         : `${info(format).label} takes letters, digits and punctuation without accents`;
     default:
       return null;
   }
+}
+
+/** The likely format for a code typed by hand, guessed from its shape alone: nothing about a
+ * bare string of digits or letters says which symbology it is, so this is a guess, not a read.
+ * Digit-only values are ambiguous by length (EAN-8 and UPC-E's seven-digit form overlap,
+ * EAN-13 and UPC-A's twelve-digit form overlap): ties go to the format a scanned code would
+ * end up as, so typing a code and scanning it agree (`fromZxing` already folds UPC-A and UPC-E
+ * into EAN-13). Returns null where no symbology's rule matches - the kind is left as whatever
+ * it was, not changed to a guess that is confidently wrong. */
+export function detectFormat(value: string): CodeFormat | null {
+  if (value.length === 0) return null;
+  if (/^[0-9]+$/.test(value)) {
+    switch (value.length) {
+      case 6:
+        return "upce"; // the only format this length can be
+      case 7:
+      case 8:
+        return "ean8"; // the till sees far more EAN-8s than UPC-E's seven-digit form
+      case 11:
+        return "upca"; // too short for EAN-13
+      case 12:
+      case 13:
+        return "ean13"; // a scanned UPC-A already becomes this, see fromZxing
+      default:
+        return value.length % 2 === 0 ? "itf" : null;
+    }
+  }
+  // A-D only guards a Codabar code, so it is the strongest signal before falling back to the
+  // wider character sets, which overlap it (Code 39 allows the letters A-D too, just not as a
+  // guard specifically; Codabar's colon is the one character outside Code 39's set).
+  if (/^[A-D]/.test(value) && /[A-D]$/.test(value) && CODABAR_INNER.test(codabarInner(value))) {
+    return "codabar";
+  }
+  if (CODE39_BODY.test(value)) return "code39";
+  if (CODABAR_INNER.test(codabarInner(value))) return "codabar";
+  if (PRINTABLE_ASCII.test(value)) return "code128"; // the common alphanumeric symbology
+  return null;
 }
 
 /** The value with its check digit, for EAN and UPC codes saved without one. */
