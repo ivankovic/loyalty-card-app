@@ -43,7 +43,7 @@ anyhow = "1"
 
 # The database. `bundled` builds SQLite into the binary, so the container image needs no
 # library and every build runs the same SQLite.
-rusqlite = { version = "0.40", features = ["bundled"] }
+rusqlite = { version = "0.41", features = ["bundled"] }
 
 # The web server. axum's default features are off: they bring multipart, websockets and
 # tracing, none of which this serves.
