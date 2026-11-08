@@ -139,6 +139,16 @@ function browser(kind: "chromium" | "webkit", launch: LaunchOptions = {}): Promi
   return found;
 }
 
+/**
+ * WebKit 2370 (Playwright 1.64) reports a `style-src-attr` violation of the app's CSP whenever a
+ * page creates a `<select>`: the control's own internals set an inline style. The select draws
+ * the same as in WebKit 2359 (Playwright 1.63), so the message is noise, and nothing in the app
+ * causes it. Chromium runs every flow too and reports any inline style the app itself sets.
+ */
+function webkitSelectNoise(text: string): boolean {
+  return text.startsWith("Refused to apply a stylesheet") && text.includes("style-src");
+}
+
 /** A phone-sized browser on the app. */
 export async function phone(
   server: Server,
@@ -157,7 +167,9 @@ export async function phone(
   const page = await context.newPage();
   const errors: string[] = [];
   page.on("console", (m) => {
-    if (m.type() === "error") errors.push(m.text());
+    if (m.type() === "error" && !(kind === "webkit" && webkitSelectNoise(m.text()))) {
+      errors.push(m.text());
+    }
   });
   page.on("pageerror", (e) => errors.push(e.message));
   return { context, page, errors };
