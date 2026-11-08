@@ -91,7 +91,8 @@ in memory. The web app's pure modules have their tests beside them (`web/src/*.t
   and private cards, the app offline. `camera.e2e.ts` feeds Chromium's fake camera a video of a
   barcode and checks the scan fills the card in. `bun run e2e camera` runs one file;
   `run.ts` explains the rest. WebKit needs system libraries; where they are missing the flows run
-  in Chromium only and the runner says so.
+  in Chromium only and the runner says so. `make e2e-container` runs both browsers in the
+  Playwright image CI uses (podman or docker), which has them all.
 - `tests/container.rs` builds the image, runs it read-only behind a real `nginx:alpine` in
   podman or docker, and signs in through the proxy. It runs only with
   `LOYALTY_CONTAINER_TESTS=1` (`make integration-test`).

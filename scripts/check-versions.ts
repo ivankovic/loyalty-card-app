@@ -16,16 +16,26 @@
 
 // Fails when the version is not the same everywhere it is written: Cargo.toml (the binary's
 // --version), web/package.json (shown in the app's settings), and, with --release, a dated
-// section in CHANGELOG.md.
+// section in CHANGELOG.md. Also when CI's Playwright image is not the `playwright` the e2e tests
+// drive it with: its browsers are built for that version only, and Dependabot moves the package
+// but not the image.
 
 import { join } from "node:path";
 
 const root = join(import.meta.dir, "..");
 const cargo = /^version = "([^"]+)"/m.exec(await Bun.file(join(root, "Cargo.toml")).text())?.[1];
-const web = (await Bun.file(join(root, "web/package.json")).json()).version;
+const pkg = await Bun.file(join(root, "web/package.json")).json();
+const web = pkg.version;
+const ci = await Bun.file(join(root, ".github/workflows/ci.yml")).text();
+const image = /mcr\.microsoft\.com\/playwright:v([0-9.]+)-/.exec(ci)?.[1];
 const problems: string[] = [];
 if (!cargo) problems.push("Cargo.toml has no version");
 if (cargo !== web) problems.push(`Cargo.toml says ${cargo}, web/package.json says ${web}`);
+if (image !== pkg.devDependencies?.playwright) {
+  problems.push(
+    `CI's Playwright image is ${image}, web/package.json has playwright ${pkg.devDependencies?.playwright}: move the image in .github/workflows/ci.yml`,
+  );
+}
 if (process.argv.includes("--release")) {
   const changelog = await Bun.file(join(root, "CHANGELOG.md")).text();
   if (!new RegExp(`^## \\[${cargo?.replaceAll(".", "\\.")}\\] - \\d{4}-\\d{2}-\\d{2}$`, "m").test(changelog)) {

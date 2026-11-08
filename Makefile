@@ -21,8 +21,12 @@ BUN ?= bun
 # nextest when it is installed: it enforces the time budgets in .config/nextest.toml.
 RUNNER := $(shell command -v cargo-nextest >/dev/null 2>&1 && echo "$(CARGO) nextest run" || echo "$(CARGO) test")
 
-.PHONY: help web build test test-rust test-web e2e integration-test coverage lint fmt hooks \
-	third-party-notices check-third-party-notices check-versions check-headers image ci
+.PHONY: help web build test test-rust test-web e2e e2e-container integration-test coverage lint \
+	fmt hooks third-party-notices check-third-party-notices check-versions check-headers image ci
+
+# CI's image for the e2e tests, read from ci.yml so that the two cannot differ.
+PLAYWRIGHT_IMAGE = $(shell sed -n 's/.*image: \(mcr\.microsoft\.com\/playwright:[^ ]*\).*/\1/p' .github/workflows/ci.yml)
+ENGINE ?= $(shell command -v podman >/dev/null 2>&1 && echo podman || echo docker)
 
 help:
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sed 's/:.*## /\t/' | expand -t 28
@@ -47,6 +51,12 @@ test-web: web/node_modules
 
 e2e: web/node_modules ## The end-to-end tests: the real server, the built app, a browser
 	cd web && $(BUN) run e2e
+
+e2e-container: web ## The end-to-end tests in CI's Playwright image, both browsers
+	$(CARGO) build --locked --bin loyalty
+	$(ENGINE) run --rm --ipc=host --network none -v "$(CURDIR)":/src:Z \
+		-v "$$(command -v $(BUN))":/usr/local/bin/bun:ro,Z -w /src/web \
+		-e E2E_PREBUILT=1 -e E2E_BROWSERS=chromium,webkit $(PLAYWRIGHT_IMAGE) bun run e2e
 
 integration-test: ## The image behind a real nginx (needs podman or docker)
 	LOYALTY_CONTAINER_TESTS=1 $(CARGO) nextest run --locked --test container
