@@ -27,7 +27,7 @@
 
 use crate::db::Db;
 use anyhow::Context as _;
-use argon2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
+use argon2::password_hash::{PasswordHasher, PasswordVerifier};
 use rusqlite::{OptionalExtension as _, params};
 use serde::Serialize;
 use sha2::{Digest as _, Sha256};
@@ -216,22 +216,19 @@ pub fn check_password(password: &str) -> Result<(), Refused> {
     }
 }
 
+/// Argon2id with its default parameters and a random salt, as a PHC string. A stored hash keeps
+/// its own parameters, so a hash written with older defaults still verifies.
 pub fn hash_password(password: &str) -> anyhow::Result<String> {
-    let mut salt = [0u8; 16];
-    getrandom::fill(&mut salt).map_err(|e| anyhow::anyhow!("no randomness: {e}"))?;
-    let salt = SaltString::encode_b64(&salt).map_err(|e| anyhow::anyhow!("{e}"))?;
     Ok(argon2::Argon2::default()
-        .hash_password(password.as_bytes(), &salt)
+        .hash_password(password.as_bytes())
         .map_err(|e| anyhow::anyhow!("cannot hash the password: {e}"))?
         .to_string())
 }
 
 fn password_matches(hash: &str, password: &str) -> bool {
-    PasswordHash::new(hash).is_ok_and(|parsed| {
-        argon2::Argon2::default()
-            .verify_password(password.as_bytes(), &parsed)
-            .is_ok()
-    })
+    argon2::Argon2::default()
+        .verify_password(password.as_bytes(), hash)
+        .is_ok()
 }
 
 const USER_COLUMNS: &str = "id, household_id, name, display_name, is_admin";

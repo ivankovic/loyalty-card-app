@@ -139,7 +139,9 @@ barcode tests load zxing's WebAssembly from `node_modules`, never from its CDN.
 2. The version in `Cargo.toml` and `web/package.json` is the new one, and `CHANGELOG.md` has a
    dated section for it: `bun run scripts/check-versions.ts --release`.
 3. Record the release's database for the upgrade test: run the release binary on a new
-   database, add a household, two people, a family card, a private card and a photo, dump it
+   database, add a household, two people (one of them `alice`, both with the password
+   `correct horse battery`, which the test signs in with), a family card, a private card and a
+   photo, dump it
    with its schema version (`.dump` leaves `user_version` out, and without it the migrations run
    again on tables that exist):
 
