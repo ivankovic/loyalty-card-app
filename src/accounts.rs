@@ -219,10 +219,25 @@ pub fn check_password(password: &str) -> Result<(), Refused> {
 /// Argon2id with its default parameters and a random salt, as a PHC string. A stored hash keeps
 /// its own parameters, so a hash written with older defaults still verifies.
 pub fn hash_password(password: &str) -> anyhow::Result<String> {
-    Ok(argon2::Argon2::default()
+    Ok(hasher()
         .hash_password(password.as_bytes())
         .map_err(|e| anyhow::anyhow!("cannot hash the password: {e}"))?
         .to_string())
+}
+
+/// The defaults' cost (19 MiB, two passes) is what slows down someone guessing passwords, and it
+/// makes a hash take a large share of a unit test's 300 ms when the machine is busy. The unit
+/// tests hash with the same algorithm at the least cost argon2 allows; the tests in `tests/`
+/// build this crate without `cfg(test)` and hash at the full cost, and one of them checks it.
+#[cfg(not(test))]
+fn hasher() -> argon2::Argon2<'static> {
+    argon2::Argon2::default()
+}
+
+#[cfg(test)]
+fn hasher() -> argon2::Argon2<'static> {
+    let least = argon2::Params::new(argon2::Params::MIN_M_COST, 1, 1, None).unwrap();
+    argon2::Argon2::new(argon2::Algorithm::Argon2id, argon2::Version::V0x13, least)
 }
 
 fn password_matches(hash: &str, password: &str) -> bool {

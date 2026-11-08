@@ -222,6 +222,33 @@ async fn signing_in_starts_a_session_that_signs_requests_in() {
 }
 
 #[tokio::test]
+async fn a_password_is_stored_at_argon2s_full_cost() {
+    // The unit tests hash at the least cost (`accounts::hasher`); what a server stores must not.
+    let app = App::new();
+    let hash: String = app
+        .state
+        .with_db(|db| {
+            db.conn()
+                .query_row("SELECT pw_hash FROM users WHERE name = 'marko'", [], |r| {
+                    r.get(0)
+                })
+                .unwrap()
+        })
+        .await;
+    let full = argon2::Params::default();
+    let cost = format!(
+        "$argon2id$v=19$m={},t={},p={}$",
+        full.m_cost(),
+        full.t_cost(),
+        full.p_cost()
+    );
+    assert!(
+        hash.starts_with(&cost),
+        "marko's password is stored as {hash}, not at {cost}"
+    );
+}
+
+#[tokio::test]
 async fn a_wrong_password_is_refused_and_repeated_ones_are_slowed_down() {
     let app = App::new();
     let attempt = || {
