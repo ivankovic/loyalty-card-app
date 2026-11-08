@@ -30,7 +30,7 @@ use std::path::PathBuf;
 use tempfile::TempDir;
 
 /// The releases with a fixture, oldest first. A release adds itself here when it is cut.
-const RELEASES: &[&str] = &["0.1.0"];
+const RELEASES: &[&str] = &["0.1.0", "0.1.1"];
 
 /// The password everyone in a fixture chose.
 const PASSWORD: &str = "correct horse battery";

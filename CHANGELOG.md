@@ -7,6 +7,17 @@ command line, and a patch version does not. The database is migrated forward by 
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-08
+
+### Changed
+
+- Passwords are hashed with argon2 0.6. Passwords chosen under 0.1.0 still sign in, and the cost
+  of a hash is unchanged.
+- SQLite 3.54.1 inside the binary (was 3.53.2), with rusqlite 0.41; tokio 1.54, sha2 0.11 and
+  getrandom 0.4.
+- The barcodes are read and drawn by zxing-wasm 3.1.6, and the image's web app is built with
+  Bun 1.4.4.
+
 ## [0.1.0] - 2026-10-28
 
 ### Added

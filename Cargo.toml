@@ -16,7 +16,7 @@
 
 [package]
 name = "loyalty-card-app"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.90"
 description = "A self-hosted loyalty card wallet for a household: cards, barcodes and photos, shared."
