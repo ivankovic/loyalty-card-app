@@ -3631,7 +3631,7 @@ the following restrictions:
 The web app that the binary serves is built from these npm packages, each under its own
 license.
 
-## zxing-wasm 3.1.5 (MIT)
+## zxing-wasm 3.1.6 (MIT)
 
 Its WebAssembly is built from zxing-cpp (https://github.com/zxing-cpp/zxing-cpp),
 Copyright the ZXing authors, under the Apache License 2.0, and from zint
