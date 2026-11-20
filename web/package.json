@@ -20,12 +20,12 @@
     "@biomejs/biome"
   ],
   "dependencies": {
-    "zxing-wasm": "3.1.6"
+    "zxing-wasm": "3.1.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.6.3",
+    "@biomejs/biome": "^2.6.8",
     "@types/bun": "^1.4.4",
-    "playwright": "1.64.1",
+    "playwright": "1.65.1",
     "typescript": "^7.0.2"
   }
 }
