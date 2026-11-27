@@ -35,7 +35,7 @@ RUN bun run build.ts
 
 # The server, with web/dist embedded. musl links statically: the binary needs nothing from the
 # image it runs in. The build fetches nothing but the crates Cargo.lock names.
-FROM docker.io/library/rust:1-alpine@sha256:a96ea6d18d4062e38f16cfbadd8b4541d622f2527dd0a5eca1fb36d301da4e88 AS build
+FROM docker.io/library/rust:1-alpine@sha256:8d0e82abfdf9a38071e07cabc5afba4ddbe077631a80e4e742a760c38beadc33 AS build
 WORKDIR /src
 COPY Cargo.toml Cargo.lock build.rs ./
 COPY src/ src/
